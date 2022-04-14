@@ -1,2 +1,0 @@
-# blog
-vuepress for blog
