@@ -9,7 +9,7 @@ module.exports =
             ]
         },
         {
-            text: '单页应用开发',
+            text: 'css学习',
             items: [
                 { text: '组件化开发 React专题', link: '/spa/react/' },
                 { text: '组件化开发 Vue专题', link: '/spa/vue/' },
@@ -17,7 +17,7 @@ module.exports =
             ]
         },
         {
-            text: '移动端APP开发',
+            text: '单页面应用学习',
             items: [
                 { text: 'TODO-1', link: '/mobile/TODO1/' },
                 { text: 'TODO-2', link: '/mobile/TODO2/' },
