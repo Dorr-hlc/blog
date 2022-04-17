@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>深js解决浮点数运算精度丢失 | Hlc 的博客 ｜ Hlc Blog</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="./logo.png">
+    <meta name="description" content="个人博客,记录学习">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.efc332cf.css" as="style"><link rel="preload" href="/blog/assets/js/app.31f0af39.js" as="script"><link rel="preload" href="/blog/assets/js/6.e6afc80a.js" as="script"><link rel="preload" href="/blog/assets/js/18.1c26d283.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.6131d21b.js"><link rel="prefetch" href="/blog/assets/js/11.511ee78a.js"><link rel="prefetch" href="/blog/assets/js/12.5eb1045b.js"><link rel="prefetch" href="/blog/assets/js/13.5e6fffaf.js"><link rel="prefetch" href="/blog/assets/js/14.06852f7e.js"><link rel="prefetch" href="/blog/assets/js/15.09c2900e.js"><link rel="prefetch" href="/blog/assets/js/16.6678d4cc.js"><link rel="prefetch" href="/blog/assets/js/17.4697d1bd.js"><link rel="prefetch" href="/blog/assets/js/2.50fe7236.js"><link rel="prefetch" href="/blog/assets/js/3.66f67669.js"><link rel="prefetch" href="/blog/assets/js/4.72c8407d.js"><link rel="prefetch" href="/blog/assets/js/5.95e54f6e.js"><link rel="prefetch" href="/blog/assets/js/7.059df098.js"><link rel="prefetch" href="/blog/assets/js/8.b85b604b.js"><link rel="prefetch" href="/blog/assets/js/9.728ae75e.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.efc332cf.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="global-layout" data-v-7ed46b13><header class="header-container" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/xq.jpeg);" data-v-399e2387 data-v-7ed46b13><nav class="navbar" style="position:absolute;opacity:1;transition:all 0.5s ease-in-out;" data-v-399e2387><a href="/blog/" class="navbar-link router-link-active">
+    Hlc Blog
+  </a> <ul class="navbar-links"><li><a href="/blog/" class="router-link-active">
+        HOME
+      </a></li><li><a href="/blog/about/">
+        ABOUT
+      </a></li><li><a href="/blog/tags/">
+        TAGS
+      </a></li></ul> <div id="nav-icon"><span></span><span></span><span></span></div></nav> <div class="header-title" data-v-399e2387 data-v-399e2387><h1 data-v-399e2387>深js解决浮点数运算精度丢失</h1> <p data-v-399e2387></p></div></header> <div class="container" data-v-2252f765 data-v-7ed46b13><main class="main" style="width:60%;" data-v-2252f765><div class="post" data-v-2252f765 data-v-2252f765><article class="main-div"><div class="post-content content content__default"><p>本篇博客主要是对 js解决浮点数运算精度丢失
+</p> <h2 id="背景"><a href="#背景" class="header-anchor">#</a> 背景</h2> <p>计算机的二进制实现和位数限制有些数无法有限表示。就像一些无理数不能有限表示，如 圆周率 3.1415926...，1.3333... 等。JS 遵循 IEEE 754 规范，采用双精度存储（double precision），占用 64 bit。此时只能模仿十进制进行四舍五入了，但是二进制只有 0 和 1 两个，于是变为 0 舍 1 入。这即是计算机中部分浮点数运算时出现误差，丢失精度的根本原因。
+浮点数精度问题，比如 0.1 + 0.2 !== 0.3
+大数精度问题，比如 9999 9999 9999 9999 == 1000 0000 0000 0000 1
+toFixed 四舍五入结果不准确，比如 1.335.toFixed(2) == 1.33
+四舍五入 toFixed()方法</p> <div class="language- extra-class"><pre class="language-text"><code>let a = 2.446242342;a = a.toFixed(2);  // 输出结果为 2.45
+let b = 2.335;b = b.toFixed(2);  // 输出结果为 2.33
+</code></pre></div><h2 id="解决思路"><a href="#解决思路" class="header-anchor">#</a> 解决思路</h2> <p>本质上在处理这类问题的时候，基本的思路就是通过将浮点数转换成整数进行计算，然后再将整数的小数点位调整，转回正确的浮点数结果。
+定义一个自定义的转换和处理函数，然后就可以使用了</p> <div class="language- extra-class"><pre class="language-text"><code>Math.formatFloat = function (f, digit) {
+    var m = Math.pow(10, digit);
+    return Math.round(f * m, 10) / m;
+}
+</code></pre></div></div></article> <!----></div></main> <aside class="aside" data-v-2252f765 data-v-2252f765><div class="info-card main-div" data-v-32ead4ce data-v-2252f765><div class="info-card-header" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/avatar-bg.jpeg);" data-v-32ead4ce><img src="/avatar-top.jpeg" alt="Hlc" class="info-avatar" data-v-32ead4ce></div> <div class="info-card-body" data-v-32ead4ce><section class="info-name" data-v-32ead4ce>
+      Hlc
+    </section> <section class="info-desc" data-v-32ead4ce>In me the tiger sniffs the rose<br/>心有猛虎，细嗅蔷薇</section> <section class="info-contact" data-v-32ead4ce><section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-location" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          Chengdu, China
+        </span></span></section> <!----> <section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-email" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          1726660621@qq.com
+        </span></span></section></section></div> <div class="info-card-footer" data-v-32ead4ce><!----></div></div> <div class="post-toc main-div aside-toc" style="position:relative;top:0;width:0px;" data-v-2252f765><h4>- CATALOG</h4> <div class="post-nav-toc"><ul><li><a href="/blog/posts/2022/03/22/js%E8%A7%A3%E5%86%B3%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E7%B2%BE%E5%BA%A6%E4%B8%A2%E5%A4%B1.html#背景">背景</a></li><li><a href="/blog/posts/2022/03/22/js%E8%A7%A3%E5%86%B3%E6%B5%AE%E7%82%B9%E6%95%B0%E8%BF%90%E7%AE%97%E7%B2%BE%E5%BA%A6%E4%B8%A2%E5%A4%B1.html#解决思路">解决思路</a></li></ul></div></div></aside></div> <footer class="footer" data-v-7ed46b13><!----> <div class="copyright"><span id="custom">Copyright &copy; Top Blog 2020 <br /> 
+            Theme By <a href="https://www.vuepress.cn/" target="_blank">VuePress</a>
+            | <a href="https://github.com/Dorr-hlc/" target="_blank">hlc</a></span> <iframe src="https://ghbtns.com/github-btn.html?user=Dorr-hlc&amp;repo=blog&amp;type=star" frameborder="0" scrolling="0" width="80px" height="20px" class="footer-btn" style="margin-left: 2px; margin-bottom:-5px;"></iframe></div></footer></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/blog/assets/js/app.31f0af39.js" defer></script><script src="/blog/assets/js/6.e6afc80a.js" defer></script><script src="/blog/assets/js/18.1c26d283.js" defer></script>
+  </body>
+</html>
