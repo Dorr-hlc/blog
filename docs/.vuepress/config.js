@@ -1,7 +1,7 @@
 module.exports = {
     // 网站 Title
     title: 'Hlc 的博客 ｜ Hlc Blog',
-    base: "/blog/",
+    base: "/blog/", 
     // 网站描述
     description: '个人博客,记录学习',
 
@@ -25,13 +25,13 @@ module.exports = {
             name: 'Hlc',
 
             // 头像 public文件夹下
-            avatar: '/avatar-top.jpeg',
+            avatar: './avatar-top.jpeg',
 
             // 头部背景图
-            headerBackgroundImg: '/avatar-bg.jpeg',
+            headerBackgroundImg: './avatar-bg.jpeg',
 
             // 个人简介 (支持 HTML)
-            description: 'In me the tiger sniffs the rose<br/>心有猛虎，细嗅蔷薇',
+            description: 'Outside the pavilion, beside the ancient road, there are fragrant grass and green lotus days<br/>长亭外，古道边，芳草碧莲天',
 
             // 电子邮箱
             email: '1726660621@qq.com',
@@ -51,18 +51,18 @@ module.exports = {
             home: {
                 title: 'Hlc Blog',
                 subtitle: '好好生活，慢慢相遇',
-                headerImage: '/home-bg.jpeg'
+                headerImage: './home-bg.jpeg'
             },
 
             // tag页面头部标题背景图设置，图片直接放在 public 文件夹下
             tags: {
                 title: 'Tags',
                 subtitle: '遇见你花光了我所有的运气',
-                headerImage: '/tags-bg.jpeg'
+                headerImage: './tags-bg.jpeg'
             },
 
             // 文章详情头部背景图
-            postHeaderImg: '/xq.jpeg',
+            postHeaderImg: './xq.jpeg',
         },
 
         // 社交平台帐号信息 
@@ -101,7 +101,7 @@ module.exports = {
             },
 
             // 添加自定义 footer
-            custom: `Copyright &copy; Top Blog 2020 <br /> 
+            custom: `Copyright &copy; Hlc Blog 2022 <br /> 
             Theme By <a href="https://www.vuepress.cn/" target="_blank">VuePress</a>
             | <a href="https://github.com/Dorr-hlc/" target="_blank">hlc</a>`
         },
