@@ -8,7 +8,7 @@ module.exports = {
 
     // 网站 favicon 图标设置等
     head: [
-        ['link', { rel: 'icon', href: '/logo.png' }],
+        ['link', { rel: 'icon', href: '/blog/logo.png' }],
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
     ],
     evergreen: true,
@@ -32,10 +32,10 @@ module.exports = {
             name: 'Hlc',
 
             // 头像 public文件夹下
-            avatar: '/avatar-top.jpeg',
+            avatar: '/blog/avatar-top.jpeg',
 
             // 头部背景图
-            headerBackgroundImg: '/avatar-bg.jpeg',
+            headerBackgroundImg: '/blog/avatar-bg.jpeg',
 
             // 个人简介 (支持 HTML)
             description: 'Outside the pavilion, beside the ancient road, there are fragrant grass and green lotus days<br/>长亭外，古道边，芳草碧莲天',
@@ -58,17 +58,17 @@ module.exports = {
             home: {
                 title: 'Hlc Blog',
                 subtitle: '好好生活，慢慢相遇',
-                headerImage: '/home-bg.jpeg'
+                headerImage: '/blog/home-bg.jpeg'
             },
 
             // tag页面头部标题背景图设置，图片直接放在 public 文件夹下
             tags: {
                 title: 'Tags',
                 subtitle: '遇见你花光了我所有的运气',
-                headerImage: '/tags-bg.jpeg'
+                headerImage: '/blog/tags-bg.jpeg'
             },
             // 文章详情头部背景图
-            postHeaderImg: '/xq.jpeg',
+            postHeaderImg: '/blog/xq.jpeg',
         },
 
         // 社交平台帐号信息 
