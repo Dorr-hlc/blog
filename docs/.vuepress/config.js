@@ -8,16 +8,11 @@ module.exports = {
 
     // 网站 favicon 图标设置等
     head: [
-        ['link', { rel: 'icon', href: '/blog/logo.png' }],
+        ['link', { rel: 'icon', href: '/logo.png' }],
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
     ],
     evergreen: true,
 
-    // plugins: [
-    //     ['@vuepress/google-analytics', {
-    //       ga: 'UA-165839722-1',
-    //     }],
-    //   ],
     // 使用的主题
     theme: 'melodydl',
 
