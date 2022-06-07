@@ -53,17 +53,17 @@ module.exports = {
             home: {
                 title: 'Hlc Blog',
                 subtitle: '好好生活，慢慢相遇',
-                headerImage: '/blog/home-bg.jpeg'
+                headerImage: '/blog/home-bg.jpg'
             },
 
             // tag页面头部标题背景图设置，图片直接放在 public 文件夹下
             tags: {
                 title: 'Tags',
                 subtitle: '遇见你花光了我所有的运气',
-                headerImage: '/blog/tags-bg.jpeg'
+                headerImage: '/blog/tags-bg.png'
             },
             // 文章详情头部背景图
-            postHeaderImg: '/blog/xq.jpeg',
+            postHeaderImg: '/blog/xq.jpg',
         },
 
         // 社交平台帐号信息 
