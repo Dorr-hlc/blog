@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>2022-05-01-node.js学习day01 | Hlc 的博客 ｜ Hlc Blog</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/blog/logo.png">
+    <meta name="description" content="个人博客,记录学习">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.efc332cf.css" as="style"><link rel="preload" href="/blog/assets/js/app.c4280a72.js" as="script"><link rel="preload" href="/blog/assets/js/7.9faf11e6.js" as="script"><link rel="preload" href="/blog/assets/js/24.369f879c.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.162e6758.js"><link rel="prefetch" href="/blog/assets/js/11.49d50c5f.js"><link rel="prefetch" href="/blog/assets/js/12.c99b8c57.js"><link rel="prefetch" href="/blog/assets/js/13.0f855da0.js"><link rel="prefetch" href="/blog/assets/js/14.501e2971.js"><link rel="prefetch" href="/blog/assets/js/15.a14b2f83.js"><link rel="prefetch" href="/blog/assets/js/16.c762691f.js"><link rel="prefetch" href="/blog/assets/js/17.dc09c94e.js"><link rel="prefetch" href="/blog/assets/js/18.b0236c99.js"><link rel="prefetch" href="/blog/assets/js/19.8865a37a.js"><link rel="prefetch" href="/blog/assets/js/2.b504c98d.js"><link rel="prefetch" href="/blog/assets/js/20.6544b024.js"><link rel="prefetch" href="/blog/assets/js/21.8b3fe4a6.js"><link rel="prefetch" href="/blog/assets/js/22.6f4fc4ba.js"><link rel="prefetch" href="/blog/assets/js/23.af778334.js"><link rel="prefetch" href="/blog/assets/js/25.299fb1c7.js"><link rel="prefetch" href="/blog/assets/js/26.b748b833.js"><link rel="prefetch" href="/blog/assets/js/3.06ccb739.js"><link rel="prefetch" href="/blog/assets/js/4.9843e598.js"><link rel="prefetch" href="/blog/assets/js/5.fa0cc808.js"><link rel="prefetch" href="/blog/assets/js/6.822870e3.js"><link rel="prefetch" href="/blog/assets/js/8.d61cb209.js"><link rel="prefetch" href="/blog/assets/js/9.c3965f9d.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.efc332cf.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="global-layout" data-v-7ed46b13><header class="header-container" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/blog/xq.jpg);" data-v-399e2387 data-v-7ed46b13><nav class="navbar" style="position:absolute;opacity:1;transition:all 0.5s ease-in-out;" data-v-399e2387><a href="/blog/" class="navbar-link router-link-active">
+    Hlc Blog
+  </a> <ul class="navbar-links"><li><a href="/blog/" class="router-link-active">
+        HOME
+      </a></li><li><a href="/blog/about/">
+        ABOUT
+      </a></li><li><a href="/blog/tags/">
+        TAGS
+      </a></li></ul> <div id="nav-icon"><span></span><span></span><span></span></div></nav> <div class="header-title" data-v-399e2387 data-v-399e2387><h1 data-v-399e2387>2022-05-01-node.js学习day01</h1> <p data-v-399e2387></p></div></header> <div class="container" data-v-2252f765 data-v-7ed46b13><main class="main" style="width:60%;" data-v-2252f765><div class="post" data-v-2252f765 data-v-2252f765><article class="main-div"><div class="post-content content content__default"><p>本篇博客主要是对 关于node.js基本操作的学习
+</p> <h2 id="_01-使用readfile方法读取文件的内容"><a href="#_01-使用readfile方法读取文件的内容" class="header-anchor">#</a> 01.使用readFile方法读取文件的内容</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// 1. 导入 fs 模块，来操作文件</span>
+<span class="token property-declaration"><span class="token property">const</span> fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 2. 调用 fs.readFile() 方法读取文件</span>
+<span class="token comment">//    参数1：读取文件的存放路径</span>
+<span class="token comment">//    参数2：读取文件时候采用的编码格式，一般默认指定 utf8</span>
+<span class="token comment">//    参数3：回调函数，拿到读取失败和成功的结果  err  dataStr</span>
+fs<span class="token punctuation">.</span><span class="token func"><span class="token function">readFile</span><span class="token punctuation">(</span><span class="token string">'./files/11.txt'</span><span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> dataStr<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+  <span class="token comment">// 2.1 打印失败的结果</span>
+  <span class="token comment">// 如果读取成功，则 err 的值为 null</span>
+  <span class="token comment">// 如果读取失败，则 err 的值为 错误对象，dataStr 的值为 undefined</span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span></span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'-------'</span><span class="token punctuation">)</span></span>
+  <span class="token comment">// 2.2 打印成功的结果</span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>dataStr<span class="token punctuation">)</span></span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="_02-判断文件是否读取成功"><a href="#_02-判断文件是否读取成功" class="header-anchor">#</a> 02.判断文件是否读取成功</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token property-declaration"><span class="token property">const</span> fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span></span>
+
+fs<span class="token punctuation">.</span><span class="token func"><span class="token function">readFile</span><span class="token punctuation">(</span><span class="token string">'./files/11.txt'</span><span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> dataStr<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+  <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+    <span class="token statement"><span class="token keyword">return</span> console.log<span class="token punctuation">(</span><span class="token string">'读取文件失败！'</span> <span class="token operator">+</span> err.message<span class="token punctuation">)</span></span>
+  <span class="token punctuation">}</span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'读取文件成功！'</span> <span class="token operator">+</span> dataStr<span class="token punctuation">)</span></span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="_03-写入文件内容"><a href="#_03-写入文件内容" class="header-anchor">#</a> 03.写入文件内容</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// 1. 导入 fs 文件系统模块</span>
+<span class="token property-declaration"><span class="token property">const</span> fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 2. 调用 fs.writeFile() 方法，写入文件的内容</span>
+<span class="token comment">//    参数1：表示文件的存放路径</span>
+<span class="token comment">//    参数2：表示要写入的内容</span>
+<span class="token comment">//    参数3：回调函数</span>
+fs<span class="token punctuation">.</span><span class="token func"><span class="token function">writeFile</span><span class="token punctuation">(</span><span class="token string">'./files/3.txt'</span><span class="token punctuation">,</span> <span class="token string">'ok123'</span><span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+  <span class="token comment">// 2.1 如果文件写入成功，则 err 的值等于 null</span>
+  <span class="token comment">// 2.2 如果文件写入失败，则 err 的值等于一个 错误对象</span>
+  <span class="token comment">// console.log(err)</span>
+
+  <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+    <span class="token statement"><span class="token keyword">return</span> console.log<span class="token punctuation">(</span><span class="token string">'文件写入失败！'</span> <span class="token operator">+</span> err.message<span class="token punctuation">)</span></span>
+  <span class="token punctuation">}</span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'文件写入成功！'</span><span class="token punctuation">)</span></span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="_04-整理成绩"><a href="#_04-整理成绩" class="header-anchor">#</a> 04.整理成绩</h2> <p>把小红=99 小白=100 小黄=70 小黑=66 小绿=88这种格式整理成键值对的形式，</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// 1. 导入 fs 模块</span>
+<span class="token property-declaration"><span class="token property">const</span> fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 2. 调用 fs.readFile() 读取文件的内容</span>
+fs<span class="token punctuation">.</span><span class="token func"><span class="token function">readFile</span><span class="token punctuation">(</span><span class="token string">'../素材/成绩.txt'</span><span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> dataStr<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+  <span class="token comment">// 3. 判断是否读取成功</span>
+  <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+    <span class="token statement"><span class="token keyword">return</span> console.log<span class="token punctuation">(</span><span class="token string">'读取文件失败！'</span> <span class="token operator">+</span> err.message<span class="token punctuation">)</span></span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// console.log('读取文件成功！' + dataStr)</span>
+
+  <span class="token comment">// 4.1 先把成绩的数据，按照空格进行分割</span>
+  <span class="token property-declaration"><span class="token property">const</span> arrOld <span class="token operator">=</span> dataStr.split<span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span></span>
+  <span class="token comment">// 4.2 循环分割后的数组，对每一项数据，进行字符串的替换操作</span>
+  <span class="token property-declaration"><span class="token property">const</span> arrNew <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span></span>
+  arrOld<span class="token punctuation">.</span><span class="token func"><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+    arrNew.push<span class="token punctuation">(</span>item.replace<span class="token punctuation">(</span><span class="token string">'='</span><span class="token punctuation">,</span> <span class="token string">'：'</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token comment">// 4.3 把新数组中的每一项，进行合并，得到一个新的字符串</span>
+  <span class="token property-declaration"><span class="token property">const</span> newStr <span class="token operator">=</span> arrNew.join<span class="token punctuation">(</span><span class="token string">'\r\n'</span><span class="token punctuation">)</span></span>
+
+  <span class="token comment">// 5. 调用 fs.writeFile() 方法，把处理完毕的成绩，写入到新文件中</span>
+  fs<span class="token punctuation">.</span><span class="token func"><span class="token function">writeFile</span><span class="token punctuation">(</span><span class="token string">'./files/成绩-ok.txt'</span><span class="token punctuation">,</span> newStr<span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+    <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+      <span class="token statement"><span class="token keyword">return</span> console.log<span class="token punctuation">(</span><span class="token string">'写入文件失败！'</span> <span class="token operator">+</span> err.message<span class="token punctuation">)</span></span>
+    <span class="token punctuation">}</span>
+    console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'成绩写入成功！'</span><span class="token punctuation">)</span></span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="_05-演示路径的问题"><a href="#_05-演示路径的问题" class="header-anchor">#</a> 05.演示路径的问题</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token property-declaration"><span class="token property">const</span> fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 出现路径拼接错误的问题，是因为提供了 ./ 或 ../ 开头的相对路径</span>
+<span class="token comment">// 如果要解决这个问题，可以直接提供一个完整的文件存放路径就行</span>
+<span class="token comment">/* fs.readFile('./files/1.txt', 'utf8', function(err, dataStr) {
+  if (err) {
+    return console.log('读取文件失败！' + err.message)
+  }
+  console.log('读取文件成功！' + dataStr)
+}) */</span>
+
+<span class="token comment">// 移植性非常差、不利于维护</span>
+<span class="token comment">/* fs.readFile('C:\\Users\\escook\\Desktop\\Node.js基础\\day1\\code\\files\\1.txt', 'utf8', function(err, dataStr) {
+  if (err) {
+    return console.log('读取文件失败！' + err.message)
+  }
+  console.log('读取文件成功！' + dataStr)
+}) */</span>
+
+<span class="token comment">// __dirname 表示当前文件所处的目录</span>
+<span class="token comment">// console.log(__dirname)</span>
+
+fs<span class="token punctuation">.</span><span class="token func"><span class="token function">readFile</span><span class="token punctuation">(</span>__dirname <span class="token operator">+</span> <span class="token string">'/files/1.txt'</span><span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> dataStr<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+  <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+    <span class="token statement"><span class="token keyword">return</span> console.log<span class="token punctuation">(</span><span class="token string">'读取文件失败！'</span> <span class="token operator">+</span> err.message<span class="token punctuation">)</span></span>
+  <span class="token punctuation">}</span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'读取文件成功！'</span> <span class="token operator">+</span> dataStr<span class="token punctuation">)</span></span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="_06-path-join方法的使用"><a href="#_06-path-join方法的使用" class="header-anchor">#</a> 06.path.join方法的使用</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token property-declaration"><span class="token property">const</span> path <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span></span>
+<span class="token property-declaration"><span class="token property">const</span> fs <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 注意：  ../ 会抵消前面的路径</span>
+<span class="token comment">// const pathStr = path.join('/a', '/b/c', '../../', './d', 'e')</span>
+<span class="token comment">// console.log(pathStr)  // \a\b\d\e</span>
+
+<span class="token comment">// fs.readFile(__dirname + '/files/1.txt')</span>
+
+fs<span class="token punctuation">.</span><span class="token func"><span class="token function">readFile</span><span class="token punctuation">(</span>path.join<span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./files/1.txt'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">,</span> <span class="token func"><span class="token function">function</span><span class="token punctuation">(</span>err<span class="token punctuation">,</span> dataStr<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+  <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+    <span class="token statement"><span class="token keyword">return</span> console.<span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>err.message<span class="token punctuation">)</span></span></span>
+  <span class="token punctuation">}</span>
+  console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>dataStr<span class="token punctuation">)</span></span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><h2 id="_07-path-basename方法的使用"><a href="#_07-path-basename方法的使用" class="header-anchor">#</a> 07.path.basename方法的使用</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token property-declaration"><span class="token property">const</span> path <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 定义文件的存放路径</span>
+<span class="token property-declaration"><span class="token property">const</span> fpath <span class="token operator">=</span> <span class="token string">'/a/b/c/index.html'</span></span>
+
+<span class="token comment">// const fullName = path.basename(fpath)</span>
+<span class="token comment">// console.log(fullName)</span>
+
+<span class="token property-declaration"><span class="token property">const</span> nameWithoutExt <span class="token operator">=</span> path.basename<span class="token punctuation">(</span>fpath<span class="token punctuation">,</span> <span class="token string">'.html'</span><span class="token punctuation">)</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>nameWithoutExt<span class="token punctuation">)</span></span>
+
+</code></pre></div><h2 id="总结"><a href="#总结" class="header-anchor">#</a> 总结</h2> <p>通过第一天对node.js的学习，感觉相对还是比较简单的，因为很多地方都和js相同，只是需要对es6相对熟练理解。</p></div></article> <!----></div></main> <aside class="aside" data-v-2252f765 data-v-2252f765><div class="info-card main-div" data-v-32ead4ce data-v-2252f765><div class="info-card-header" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/blog/avatar-bg.jpeg);" data-v-32ead4ce><img src="/blog/avatar-top.jpeg" alt="Hlc" class="info-avatar" data-v-32ead4ce></div> <div class="info-card-body" data-v-32ead4ce><section class="info-name" data-v-32ead4ce>
+      Hlc
+    </section> <section class="info-desc" data-v-32ead4ce>Outside the pavilion, beside the ancient road, there are fragrant grass and green lotus days<br/>长亭外，古道边，芳草碧莲天</section> <section class="info-contact" data-v-32ead4ce><section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-location" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          Chengdu, China
+        </span></span></section> <!----> <section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-email" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          1726660621@qq.com
+        </span></span></section></section></div> <div class="info-card-footer" data-v-32ead4ce><!----></div></div> <div class="post-toc main-div aside-toc" style="position:relative;top:0;width:0px;" data-v-2252f765><h4>- CATALOG</h4> <div class="post-nav-toc"><ul><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_01-使用readfile方法读取文件的内容">01.使用readFile方法读取文件的内容</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_02-判断文件是否读取成功">02.判断文件是否读取成功</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_03-写入文件内容">03.写入文件内容</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_04-整理成绩">04.整理成绩</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_05-演示路径的问题">05.演示路径的问题</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_06-path-join方法的使用">06.path.join方法的使用</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#_07-path-basename方法的使用">07.path.basename方法的使用</a></li><li><a href="/blog/posts/2022/05/01/node-js%E5%AD%A6%E4%B9%A0day01.html#总结">总结</a></li></ul></div></div></aside></div> <footer class="footer" data-v-7ed46b13><!----> <div class="copyright"><span id="custom">Copyright &copy; Hlc Blog 2022 <br /> 
+            Theme By <a href="https://www.vuepress.cn/" target="_blank">VuePress</a>
+            | <a href="https://github.com/Dorr-hlc/" target="_blank">hlc</a></span> <iframe src="https://ghbtns.com/github-btn.html?user=Dorr-hlc&amp;repo=blog&amp;type=star" frameborder="0" scrolling="0" width="80px" height="20px" class="footer-btn" style="margin-left: 2px; margin-bottom:-5px;"></iframe></div></footer></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/blog/assets/js/app.c4280a72.js" defer></script><script src="/blog/assets/js/7.9faf11e6.js" defer></script><script src="/blog/assets/js/24.369f879c.js" defer></script>
+  </body>
+</html>

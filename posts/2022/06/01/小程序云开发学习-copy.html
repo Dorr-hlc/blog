@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>2022-06-01-小程序云开发学习 | Hlc 的博客 ｜ Hlc Blog</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/blog/logo.png">
+    <meta name="description" content="个人博客,记录学习">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.efc332cf.css" as="style"><link rel="preload" href="/blog/assets/js/app.c4280a72.js" as="script"><link rel="preload" href="/blog/assets/js/7.9faf11e6.js" as="script"><link rel="preload" href="/blog/assets/js/4.9843e598.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.162e6758.js"><link rel="prefetch" href="/blog/assets/js/11.49d50c5f.js"><link rel="prefetch" href="/blog/assets/js/12.c99b8c57.js"><link rel="prefetch" href="/blog/assets/js/13.0f855da0.js"><link rel="prefetch" href="/blog/assets/js/14.501e2971.js"><link rel="prefetch" href="/blog/assets/js/15.a14b2f83.js"><link rel="prefetch" href="/blog/assets/js/16.c762691f.js"><link rel="prefetch" href="/blog/assets/js/17.dc09c94e.js"><link rel="prefetch" href="/blog/assets/js/18.b0236c99.js"><link rel="prefetch" href="/blog/assets/js/19.8865a37a.js"><link rel="prefetch" href="/blog/assets/js/2.b504c98d.js"><link rel="prefetch" href="/blog/assets/js/20.6544b024.js"><link rel="prefetch" href="/blog/assets/js/21.8b3fe4a6.js"><link rel="prefetch" href="/blog/assets/js/22.6f4fc4ba.js"><link rel="prefetch" href="/blog/assets/js/23.af778334.js"><link rel="prefetch" href="/blog/assets/js/24.369f879c.js"><link rel="prefetch" href="/blog/assets/js/25.299fb1c7.js"><link rel="prefetch" href="/blog/assets/js/26.b748b833.js"><link rel="prefetch" href="/blog/assets/js/3.06ccb739.js"><link rel="prefetch" href="/blog/assets/js/5.fa0cc808.js"><link rel="prefetch" href="/blog/assets/js/6.822870e3.js"><link rel="prefetch" href="/blog/assets/js/8.d61cb209.js"><link rel="prefetch" href="/blog/assets/js/9.c3965f9d.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.efc332cf.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="global-layout" data-v-7ed46b13><header class="header-container" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/blog/xq.jpg);" data-v-399e2387 data-v-7ed46b13><nav class="navbar" style="position:absolute;opacity:1;transition:all 0.5s ease-in-out;" data-v-399e2387><a href="/blog/" class="navbar-link router-link-active">
+    Hlc Blog
+  </a> <ul class="navbar-links"><li><a href="/blog/" class="router-link-active">
+        HOME
+      </a></li><li><a href="/blog/about/">
+        ABOUT
+      </a></li><li><a href="/blog/tags/">
+        TAGS
+      </a></li></ul> <div id="nav-icon"><span></span><span></span><span></span></div></nav> <div class="header-title" data-v-399e2387 data-v-399e2387><h1 data-v-399e2387>2022-06-01-小程序云开发学习</h1> <p data-v-399e2387></p></div></header> <div class="container" data-v-2252f765 data-v-7ed46b13><main class="main" style="width:60%;" data-v-2252f765><div class="post" data-v-2252f765 data-v-2252f765><article class="main-div"><div class="post-content content content__default"><p>本篇博客主要是对 小程序如何用云数据库增删改查
+</p> <h2 id="_01-背景"><a href="#_01-背景" class="header-anchor">#</a> 01.背景</h2> <p>1.无需搭建服务器，快速构建小程序、公众号
+2.免登录、免鉴权调用微信开放服务
+● 云开发可以通过云函数直接调用微信开放api，免去了登录、鉴权等一些列复杂的前置操作，这一步大大的降低了开发的成本
+3.云存储
+● 云开发提供了一块存储空间，提供了上传文件到云端、带权限管理的云端下载能力，前端开发可以在小程序端和云函数端通过 API 使用云存储功能。也就是说文件存储这一块功能可以由前端独自完成，只需将云存储返回的fileId传给后端写入到数据库即可。</p> <h2 id="_02配置云环境"><a href="#_02配置云环境" class="header-anchor">#</a> 02配置云环境</h2> <p>1.在小程序端开始使用云能力前，需要调用wx.cloud.init方法对云能力进行初始化</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// app.js</span>
+<span class="token func"><span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token func"><span class="token function">onLaunch</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+        wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span>init<span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token property-declaration"><span class="token property">env</span><span class="token punctuation">:</span> <span class="token string">&quot;hlc-utga0&quot;</span></span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        this<span class="token punctuation">.</span><span class="token func"><span class="token function">getOpenid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span>
+    <span class="token punctuation">}</span>,
+
+    globalData<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        userInfo<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            openid<span class="token punctuation">:</span> wx<span class="token punctuation">.</span>getStorage<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                <span class="token property-declaration"><span class="token property">key</span><span class="token punctuation">:</span> <span class="token string">'openid'</span></span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><p>字段env表示自己在与云数据库中的环境ID.</p> <p><strong>2.在跟目录中创建云函数目录的文件夹</strong></p> <p><img src="data:image/png;base64,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" alt="enter description here" title="2022-06-01.png"></p> <p><strong>3.在project.config.json文件中指定云函数的目录</strong></p> <p><img src="data:image/png;base64,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" alt="enter description here" title="2022-06-01-pic2.png"></p> <h2 id="_03添加数据"><a href="#_03添加数据" class="header-anchor">#</a> 03添加数据</h2> <p><img src="/blog/assets/img/2022-06-01-pic3.640f4a0d.png" alt="enter description here" title="2022-06-01-pic3.png"></p> <p>以下是wxss,wxml</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">/* pages/add/add.wxss */</span>
+
+
+<span class="token selector">.chooseimg <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">border-bottom</span><span class="token punctuation">:</span> <span class="token number">15</span><span class="token unit">rpx</span> solid <span class="token hexcode">#beb8b8</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">15</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.choose-tit <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">font-size</span><span class="token punctuation">:</span> <span class="token number">32</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">font-weight</span><span class="token punctuation">:</span> bold<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">color</span><span class="token punctuation">:</span> <span class="token hexcode">#1a1a1a</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.tip <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">font-size</span><span class="token punctuation">:</span> <span class="token number">28</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">color</span><span class="token punctuation">:</span> <span class="token hexcode">#beb8b8</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">font-weight</span><span class="token punctuation">:</span> <span class="token number">400</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.choose-box <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">max-width</span><span class="token punctuation">:</span> <span class="token number">200</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">background</span><span class="token punctuation">:</span> <span class="token hexcode">#f7f3f3</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">20</span><span class="token unit">rpx</span> <span class="token number">0</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">20</span><span class="token unit">rpx</span> <span class="token number">0</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.choose-box image <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">64</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">64</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.choose-box text <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">font-size</span><span class="token punctuation">:</span> <span class="token number">32</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">color</span><span class="token punctuation">:</span> <span class="token hexcode">#beb8b8</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.infobox <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token unit">rpx</span> <span class="token number">15</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.ipttxt <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">color</span><span class="token punctuation">:</span> <span class="token hexcode">#beb8b8</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">font-size</span><span class="token punctuation">:</span> <span class="token number">32</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">30</span><span class="token unit">rpx</span> <span class="token number">0</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">input <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">text-align</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">vertical-align</span><span class="token punctuation">:</span> middle<span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">input::placeholder <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">color</span><span class="token punctuation">:</span> <span class="token hexcode">#beb8b8</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.upload <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">500</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">80</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">margin</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">background</span><span class="token punctuation">:</span> <span class="token func"><span class="token function">rgb</span><span class="token punctuation">(</span><span class="token number">155</span><span class="token punctuation">,</span> <span class="token number">156</span><span class="token punctuation">,</span> <span class="token number">154</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span></span>
+    <span class="token property-declaration"><span class="token property">border-radius</span><span class="token punctuation">:</span> <span class="token number">20</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">color</span><span class="token punctuation">:</span> <span class="token hexcode">#f7f3f3</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">line-height</span><span class="token punctuation">:</span> <span class="token number">80</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.preview <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">20</span><span class="token unit">rpx</span> <span class="token number">20</span><span class="token unit">rpx</span> <span class="token number">20</span><span class="token unit">rpx</span> <span class="token number">0</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.preview image <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">200</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.cover <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">line-height</span><span class="token punctuation">:</span> <span class="token number">100</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.cover image <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">50</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+    <span class="token property-declaration"><span class="token property">vertical-align</span><span class="token punctuation">:</span> middle<span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.cover input <span class="token punctuation">{</span></span>
+    <span class="token property-declaration"><span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">60</span><span class="token unit">rpx</span><span class="token punctuation">;</span></span>
+<span class="token punctuation">}</span>
+
+
+</code></pre></div><div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token selector">&lt;view class=&quot;container&quot;&gt;</span>
+    <span class="token selector">&lt;view class=&quot;chooseimg&quot;&gt;</span>
+        &lt;text class=<span class="token string">&quot;choose-tit&quot;</span>&gt;上传曲谱 &lt;text class=<span class="token string">&quot;tip&quot;</span>&gt;<span class="token punctuation">(</span>至多9张<span class="token punctuation">)</span>&lt;/text&gt;&lt;/text&gt;
+        <span class="token selector">&lt;view class=&quot;preview&quot; wx:for=&quot;<span class="token punctuation">{</span></span><span class="token interpolation variable"><span class="token delimiter punctuation">{</span>imgList<span class="token delimiter punctuation">}</span></span><span class="token punctuation">}</span><span class="token string">&quot; wx:key=&quot;</span>item&quot;&gt;
+            <span class="token selector">&lt;image src=&quot;<span class="token punctuation">{</span></span><span class="token interpolation variable"><span class="token delimiter punctuation">{</span>item<span class="token delimiter punctuation">}</span></span><span class="token punctuation">}</span><span class="token string">&quot; mode=&quot;</span>aspectFit&quot;&gt;&lt;/image&gt;
+        <span class="token selector">&lt;/view&gt;
+        &lt;view class=&quot;choose-box&quot; bindtap=&quot;chooseImage&quot;&gt;</span>
+            &lt;image src=<span class="token string">&quot;/images/icons/up-icon.png&quot;</span>&gt;&lt;/image&gt;
+            &lt;text&gt;添加新图片&lt;/text&gt;
+        &lt;/view&gt;
+    <span class="token selector">&lt;/view&gt;
+    &lt;view class=&quot;infobox&quot;&gt;</span>
+        <span class="token selector">&lt;view class=&quot;ipttxt&quot;&gt;</span>
+            &lt;text&gt;曲谱名称&lt;/text&gt; &lt;input type=<span class="token string">&quot;text&quot;</span> bindinput=<span class="token string">&quot;getname&quot;</span> placeholder=<span class="token string">&quot;必填 请输入&quot;</span> /&gt;
+        <span class="token selector">&lt;/view&gt;
+        &lt;view class=&quot;ipttxt&quot;&gt;</span>
+            &lt;text&gt;乐器&lt;/text&gt; &lt;input type=<span class="token string">&quot;text&quot;</span> bindinput=<span class="token string">&quot;getmusical&quot;</span> placeholder=<span class="token string">&quot;必填 请输入&quot;</span> /&gt;
+        <span class="token selector">&lt;/view&gt;
+        &lt;view class=&quot;ipttxt cover&quot;&gt;</span>
+            <span class="token selector">&lt;text&gt;封面&lt;/text&gt;
+            &lt;view&gt;</span>
+                <span class="token selector">&lt;image src=&quot;<span class="token punctuation">{</span></span><span class="token interpolation variable"><span class="token delimiter punctuation">{</span>coverurl<span class="token delimiter punctuation">}</span></span><span class="token punctuation">}</span><span class="token string">&quot;&gt;&lt;/image&gt; &lt;input type=&quot;</span>text<span class="token string">&quot; placeholder=&quot;</span>选填<span class="token string">&quot; bindtap=&quot;</span>upcoverimg&quot; /&gt;
+            &lt;/view&gt;
+        <span class="token selector">&lt;/view&gt;
+        &lt;view class=&quot;ipttxt&quot;&gt;</span>
+            &lt;text&gt;作者&lt;/text&gt; &lt;input type=<span class="token string">&quot;text&quot;</span> bindinput=<span class="token string">&quot;getauth&quot;</span> placeholder=<span class="token string">&quot;选填&quot;</span> /&gt;
+        <span class="token selector">&lt;/view&gt;
+        &lt;view class=&quot;ipttxt&quot;&gt;</span>
+            &lt;text&gt;曲谱类型&lt;/text&gt; &lt;input type=<span class="token string">&quot;text&quot;</span> bindinput=<span class="token string">&quot;gettype&quot;</span> placeholder=<span class="token string">&quot;选填&quot;</span> /&gt;
+        &lt;/view&gt;
+    &lt;/view&gt;
+    &lt;view class=<span class="token string">&quot;upload&quot;</span> bindtap=<span class="token string">&quot;upinfo&quot;</span>&gt;上传&lt;/view&gt;
+&lt;/view&gt;
+</code></pre></div><p><strong>接下来就是js逻辑</strong></p> <p>1.首先需要在云数据库中创建保存数据的集合</p> <p><img src="/blog/assets/img/2022-06-01-pic4.bf4684aa.png" alt="enter description here" title="2022-06-01-pic4.png"></p> <p>其中的_id是自动生成的，_openid是当前用户的唯一标识，后续可以通过查询_openid来写当前用户自己创建的文件。</p> <p>2.接下来可以通过页面Js关联云数据库中的集合，也可以通过云函数去关联，我是直接用当前页面的js</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// pages/add/add.js</span>
+Page<span class="token punctuation">(</span><span class="token punctuation">{</span>
+
+    <span class="token selector">/**</span>
+     * 页面的初始数据
+     */
+    data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        imgList<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>,
+        coverurl<span class="token punctuation">:</span> <span class="token string">''</span>,
+        info<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            openid<span class="token punctuation">:</span> <span class="token string">''</span>,
+            name<span class="token punctuation">:</span> <span class="token string">''</span>,
+            musical<span class="token punctuation">:</span> <span class="token string">''</span>,
+            auth<span class="token punctuation">:</span> <span class="token string">''</span>,
+            type<span class="token punctuation">:</span> <span class="token string">''</span>,
+            cover<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>,
+            urlList<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>,
+        <span class="token punctuation">}</span>,
+    <span class="token punctuation">}</span>,
+
+    <span class="token selector">/**</span>
+     * 生命周期函数--监听页面加载
+     */
+    <span class="token func"><span class="token function">onLoad</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+
+    <span class="token punctuation">}</span>,
+    <span class="token comment">// 选择图片封装</span>
+    <span class="token func"><span class="token function">chooseImageFunction</span><span class="token punctuation">(</span>num<span class="token punctuation">,</span> localurl<span class="token punctuation">,</span> dataurl<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        <span class="token property-declaration"><span class="token property">let</span> that <span class="token operator">=</span> this<span class="token punctuation">;</span></span>
+        wx<span class="token punctuation">.</span><span class="token func"><span class="token function">chooseImage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            count<span class="token punctuation">:</span> num<span class="token punctuation">,</span>
+            sizeType<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'original'</span><span class="token punctuation">,</span> <span class="token string">'compressed'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            sourceType<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'album'</span><span class="token punctuation">,</span> <span class="token string">'camera'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            success<span class="token punctuation">:</span> res <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+                wx.showLoading<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                    title<span class="token punctuation">:</span> <span class="token string">'上传中'</span><span class="token punctuation">,</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span></span>
+                <span class="token func"><span class="token function">setTimeout</span><span class="token punctuation">(</span>function <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+                    wx<span class="token punctuation">.</span><span class="token func"><span class="token function">hideLoading</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span>
+                <span class="token punctuation">}</span>, 2000<span class="token punctuation">)</span>
+                <span class="token comment">//    让选择图片展示在页面上，方便用户预览</span>
+                <span class="token comment">// tempFilePath可以作为 img 标签的 src 属性显示图片</span>
+                <span class="token property-declaration"><span class="token property">const</span> tempFilePaths <span class="token operator">=</span> res.tempFilePaths<span class="token punctuation">;</span></span>
+                this<span class="token punctuation">.</span><span class="token func"><span class="token function">setData</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                    <span class="token punctuation">[</span>localurl<span class="token punctuation">]</span><span class="token punctuation">:</span> tempFilePaths
+                <span class="token punctuation">}</span><span class="token punctuation">)</span></span>
+                <span class="token statement"><span class="token keyword">for</span> <span class="token punctuation">(</span>let i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> tempFilePaths.length<span class="token punctuation">;</span> i<span class="token operator">+</span><span class="token operator">+</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+                    <span class="token property-declaration"><span class="token property">let</span> imgurl <span class="token operator">=</span> tempFilePaths<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span></span>
+                    <span class="token comment">// 指定云数据库中的文件夹以及文件名</span>
+                    <span class="token property-declaration"><span class="token property">const</span> cloudPath <span class="token operator">=</span> <span class="token string">'guitar/'</span> <span class="token operator">+</span> new <span class="token func"><span class="token function">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span>.<span class="token func"><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> </span></span><span class="token string">'_'</span> <span class="token operator">+</span> Math.<span class="token func"><span class="token function">floor</span><span class="token punctuation">(</span>Math.<span class="token func"><span class="token function">random</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span> <span class="token operator">+</span> tempFilePaths<span class="token punctuation">[</span>i<span class="token punctuation">]</span>.<span class="token func"><span class="token function">match</span><span class="token punctuation">(</span><span class="token operator">/</span>\.<span class="token punctuation">[</span>^.<span class="token punctuation">]</span><span class="token operator">+</span><span class="token operator">?</span>$<span class="token operator">/</span><span class="token punctuation">)</span></span></span></span></span>
+                    that<span class="token punctuation">.</span><span class="token func"><span class="token function">uploadimg</span><span class="token punctuation">(</span>imgurl<span class="token punctuation">,</span> cloudPath<span class="token punctuation">,</span> dataurl<span class="token punctuation">)</span></span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>,
+    <span class="token comment">// 上传图片函数</span>
+    <span class="token func"><span class="token function">uploadimg</span><span class="token punctuation">(</span>filePath<span class="token punctuation">,</span> cloudPath<span class="token punctuation">,</span> dataurl<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span><span class="token func"><span class="token function">uploadFile</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            cloudPath<span class="token punctuation">,</span> <span class="token comment">// 上传至云端的路径</span>
+            filePath<span class="token punctuation">,</span> <span class="token comment">// 小程序临时文件路径</span>
+            success<span class="token punctuation">:</span> res <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+                wx.showToast<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                    title<span class="token punctuation">:</span> <span class="token string">'上传成功'</span><span class="token punctuation">,</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span></span>
+                <span class="token comment">// 获取云存储中的图片地址</span>
+                dataurl<span class="token punctuation">.</span><span class="token func"><span class="token function">push</span><span class="token punctuation">(</span>res.fileID<span class="token punctuation">)</span><span class="token punctuation">;</span></span>
+            <span class="token punctuation">}</span>,
+            <span class="token property-declaration"><span class="token property">fail</span><span class="token punctuation">:</span> console.error</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>,
+    <span class="token comment">// 上传曲谱</span>
+    <span class="token func"><span class="token function">chooseImage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        this<span class="token punctuation">.</span><span class="token func"><span class="token function">chooseImageFunction</span><span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">,</span> <span class="token string">'imgList'</span><span class="token punctuation">,</span> this.data.info.urlList<span class="token punctuation">)</span></span>
+    <span class="token punctuation">}</span>,
+    <span class="token comment">// 上传封面</span>
+    <span class="token func"><span class="token function">upcoverimg</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        this<span class="token punctuation">.</span><span class="token func"><span class="token function">chooseImageFunction</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'coverurl'</span><span class="token punctuation">,</span> this.data.info.cover<span class="token punctuation">)</span></span>
+    <span class="token punctuation">}</span>,
+    <span class="token comment">// </span>
+    <span class="token comment">// 获取输入框的值</span>
+    <span class="token func"><span class="token function">getname</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        this<span class="token punctuation">.</span>data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>name = event<span class="token punctuation">.</span>detail<span class="token punctuation">.</span>value
+    <span class="token punctuation">}</span>,
+    <span class="token func"><span class="token function">getmusical</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        this<span class="token punctuation">.</span>data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>musical = event<span class="token punctuation">.</span>detail<span class="token punctuation">.</span>value
+    <span class="token punctuation">}</span>,
+    <span class="token func"><span class="token function">getauth</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        this<span class="token punctuation">.</span>data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>auth = event<span class="token punctuation">.</span>detail<span class="token punctuation">.</span>value
+    <span class="token punctuation">}</span>,
+    <span class="token func"><span class="token function">gettype</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        this<span class="token punctuation">.</span>data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>type = event<span class="token punctuation">.</span>detail<span class="token punctuation">.</span>value
+    <span class="token punctuation">}</span>,
+
+    <span class="token func"><span class="token function">upinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        <span class="token statement"><span class="token keyword">if</span> <span class="token punctuation">(</span>this.data.info.name <span class="token operator">!=</span> <span class="token string">''</span> <span class="token operator">&amp;&amp;</span> this.data.info.musical <span class="token operator">!=</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+            <span class="token property-declaration"><span class="token property">const</span> info <span class="token operator">=</span> this.data.info</span>
+            wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span><span class="token func"><span class="token function">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span>.collection<span class="token punctuation">(</span><span class="token string">'Pedigree'</span><span class="token punctuation">)</span>.add<span class="token punctuation">(</span><span class="token punctuation">{</span></span>
+                data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+                    auth<span class="token punctuation">:</span> info<span class="token punctuation">.</span>auth,
+                    name<span class="token punctuation">:</span> info<span class="token punctuation">.</span>name,
+                    cover<span class="token punctuation">:</span> info<span class="token punctuation">.</span>cover,
+                    type<span class="token punctuation">:</span> info<span class="token punctuation">.</span>type,
+                    <span class="token property-declaration"><span class="token property">imgList</span><span class="token punctuation">:</span> info.urlList</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token func"><span class="token function">then</span><span class="token punctuation">(</span>res <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+                wx.showToast<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                    title<span class="token punctuation">:</span> <span class="token string">'添加成功'</span><span class="token punctuation">,</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span></span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token func"><span class="token function">catch</span><span class="token punctuation">(</span>err <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+                wx.showToast<span class="token punctuation">(</span><span class="token punctuation">{</span>
+                    title<span class="token punctuation">:</span> <span class="token string">'添加失败'</span><span class="token punctuation">,</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span></span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span> else <span class="token punctuation">{</span>
+            wx<span class="token punctuation">.</span><span class="token func"><span class="token function">showToast</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                title<span class="token punctuation">:</span> <span class="token string">'请填写必填项'</span><span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span></span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>,
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><p>其中的字段cover代表的是封面，urlList表示上传的谱子图，集合中本身没有保存图片，只是保存了在云存储中的fileId, 也就是在云存储中的图片地址。这样就简单实现了如何向云数据库中添加数据</p> <h2 id="_04获取数据"><a href="#_04获取数据" class="header-anchor">#</a> 04获取数据</h2> <p>获取云数据库中的数据，直接通过新建云函数，比如在云函数目录中新建getOpenid云函数,就可以获取到当前用户的唯一标识</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// 云函数入口文件</span>
+<span class="token property-declaration"><span class="token property">const</span> cloud <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'wx-server-sdk'</span><span class="token punctuation">)</span></span>
+
+cloud<span class="token punctuation">.</span><span class="token func"><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span>
+
+<span class="token comment">// 云函数入口函数</span>
+exports<span class="token punctuation">.</span>main = async <span class="token punctuation">(</span>event, context<span class="token punctuation">)</span> =&gt; <span class="token punctuation">{</span>
+    <span class="token property-declaration"><span class="token property">const</span> wxContext <span class="token operator">=</span> cloud.<span class="token func"><span class="token function">getWXContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span></span>
+
+    <span class="token statement"><span class="token keyword">return</span> <span class="token punctuation">{</span></span>
+        <span class="token selector">event<span class="token punctuation">,</span></span>
+        openid<span class="token punctuation">:</span> wxContext<span class="token punctuation">.</span>OPENID,
+        appid<span class="token punctuation">:</span> wxContext<span class="token punctuation">.</span>APPID,
+        unionid<span class="token punctuation">:</span> wxContext<span class="token punctuation">.</span>UNIONID,
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然后在app.js中调用该云函数并且保存在本地，这样我们就可以通过openid去筛选当前用户自己上传的数据</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>    <span class="token comment">// 获取openid</span>
+    <span class="token func"><span class="token function">getOpenid</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+        wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span><span class="token func"><span class="token function">callFunction</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            name<span class="token punctuation">:</span> <span class="token string">'getOpenId'</span><span class="token punctuation">,</span>
+            <span class="token func"><span class="token function">success</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span> <span class="token punctuation">{</span></span></span>
+                wx<span class="token punctuation">.</span><span class="token func"><span class="token function">setStorageSync</span><span class="token punctuation">(</span><span class="token string">'openid'</span><span class="token punctuation">,</span> res.result.openid<span class="token punctuation">)</span></span>
+            <span class="token punctuation">}</span>,
+            <span class="token func"><span class="token function">fail</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span> <span class="token punctuation">{</span></span>
+                console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span></span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>,
+</code></pre></div><p>比如我们希望去获取Pedigree集合中的数据</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code><span class="token comment">// 云函数入口文件</span>
+<span class="token property-declaration"><span class="token property">const</span> cloud <span class="token operator">=</span> require<span class="token punctuation">(</span><span class="token string">'wx-server-sdk'</span><span class="token punctuation">)</span></span>
+
+cloud<span class="token punctuation">.</span><span class="token func"><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span>
+
+<span class="token property-declaration"><span class="token property">const</span> db <span class="token operator">=</span> cloud.<span class="token func"><span class="token function">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span></span>
+<span class="token comment">// 云函数入口函数</span>
+exports<span class="token punctuation">.</span>main = async <span class="token punctuation">(</span>event, context<span class="token punctuation">)</span> =&gt; <span class="token punctuation">{</span>
+    <span class="token comment">// 只获取当前自己用户的</span>
+    <span class="token statement"><span class="token keyword">return</span> await db.collection<span class="token punctuation">(</span><span class="token string">'Pedigree'</span><span class="token punctuation">)</span>.where<span class="token punctuation">(</span><span class="token punctuation">{</span></span>
+        <span class="token property-declaration"><span class="token property">_openid</span><span class="token punctuation">:</span> event._openid</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token func"><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然后通过页面去调用该云函数，即刻获取数据</p></div></article> <!----></div></main> <aside class="aside" data-v-2252f765 data-v-2252f765><div class="info-card main-div" data-v-32ead4ce data-v-2252f765><div class="info-card-header" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/blog/avatar-bg.jpeg);" data-v-32ead4ce><img src="/blog/avatar-top.jpeg" alt="Hlc" class="info-avatar" data-v-32ead4ce></div> <div class="info-card-body" data-v-32ead4ce><section class="info-name" data-v-32ead4ce>
+      Hlc
+    </section> <section class="info-desc" data-v-32ead4ce>Outside the pavilion, beside the ancient road, there are fragrant grass and green lotus days<br/>长亭外，古道边，芳草碧莲天</section> <section class="info-contact" data-v-32ead4ce><section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-location" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          Chengdu, China
+        </span></span></section> <!----> <section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-email" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          1726660621@qq.com
+        </span></span></section></section></div> <div class="info-card-footer" data-v-32ead4ce><!----></div></div> <div class="post-toc main-div aside-toc" style="position:relative;top:0;width:0px;" data-v-2252f765><h4>- CATALOG</h4> <div class="post-nav-toc"><ul><li><a href="/blog/posts/2022/06/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-copy.html#_01-背景">01.背景</a></li><li><a href="/blog/posts/2022/06/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-copy.html#_02配置云环境">02配置云环境</a></li><li><a href="/blog/posts/2022/06/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-copy.html#_03添加数据">03添加数据</a></li><li><a href="/blog/posts/2022/06/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0-copy.html#_04获取数据">04获取数据</a></li></ul></div></div></aside></div> <footer class="footer" data-v-7ed46b13><!----> <div class="copyright"><span id="custom">Copyright &copy; Hlc Blog 2022 <br /> 
+            Theme By <a href="https://www.vuepress.cn/" target="_blank">VuePress</a>
+            | <a href="https://github.com/Dorr-hlc/" target="_blank">hlc</a></span> <iframe src="https://ghbtns.com/github-btn.html?user=Dorr-hlc&amp;repo=blog&amp;type=star" frameborder="0" scrolling="0" width="80px" height="20px" class="footer-btn" style="margin-left: 2px; margin-bottom:-5px;"></iframe></div></footer></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/blog/assets/js/app.c4280a72.js" defer></script><script src="/blog/assets/js/7.9faf11e6.js" defer></script><script src="/blog/assets/js/4.9843e598.js" defer></script>
+  </body>
+</html>

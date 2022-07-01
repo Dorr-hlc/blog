@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>从(++[[]][+[]]+[+[]]) 等于10了解隐式转换 | Hlc 的博客 ｜ Hlc Blog</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/blog/logo.png">
+    <meta name="description" content="个人博客,记录学习">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/blog/assets/css/0.styles.efc332cf.css" as="style"><link rel="preload" href="/blog/assets/js/app.c4280a72.js" as="script"><link rel="preload" href="/blog/assets/js/7.9faf11e6.js" as="script"><link rel="preload" href="/blog/assets/js/22.6f4fc4ba.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.162e6758.js"><link rel="prefetch" href="/blog/assets/js/11.49d50c5f.js"><link rel="prefetch" href="/blog/assets/js/12.c99b8c57.js"><link rel="prefetch" href="/blog/assets/js/13.0f855da0.js"><link rel="prefetch" href="/blog/assets/js/14.501e2971.js"><link rel="prefetch" href="/blog/assets/js/15.a14b2f83.js"><link rel="prefetch" href="/blog/assets/js/16.c762691f.js"><link rel="prefetch" href="/blog/assets/js/17.dc09c94e.js"><link rel="prefetch" href="/blog/assets/js/18.b0236c99.js"><link rel="prefetch" href="/blog/assets/js/19.8865a37a.js"><link rel="prefetch" href="/blog/assets/js/2.b504c98d.js"><link rel="prefetch" href="/blog/assets/js/20.6544b024.js"><link rel="prefetch" href="/blog/assets/js/21.8b3fe4a6.js"><link rel="prefetch" href="/blog/assets/js/23.af778334.js"><link rel="prefetch" href="/blog/assets/js/24.369f879c.js"><link rel="prefetch" href="/blog/assets/js/25.299fb1c7.js"><link rel="prefetch" href="/blog/assets/js/26.b748b833.js"><link rel="prefetch" href="/blog/assets/js/3.06ccb739.js"><link rel="prefetch" href="/blog/assets/js/4.9843e598.js"><link rel="prefetch" href="/blog/assets/js/5.fa0cc808.js"><link rel="prefetch" href="/blog/assets/js/6.822870e3.js"><link rel="prefetch" href="/blog/assets/js/8.d61cb209.js"><link rel="prefetch" href="/blog/assets/js/9.c3965f9d.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.efc332cf.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="global-layout" data-v-7ed46b13><header class="header-container" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/blog/xq.jpg);" data-v-399e2387 data-v-7ed46b13><nav class="navbar" style="position:absolute;opacity:1;transition:all 0.5s ease-in-out;" data-v-399e2387><a href="/blog/" class="navbar-link router-link-active">
+    Hlc Blog
+  </a> <ul class="navbar-links"><li><a href="/blog/" class="router-link-active">
+        HOME
+      </a></li><li><a href="/blog/about/">
+        ABOUT
+      </a></li><li><a href="/blog/tags/">
+        TAGS
+      </a></li></ul> <div id="nav-icon"><span></span><span></span><span></span></div></nav> <div class="header-title" data-v-399e2387 data-v-399e2387><h1 data-v-399e2387>从(++[[]][+[]]+[+[]]) 等于10了解隐式转换</h1> <p data-v-399e2387></p></div></header> <div class="container" data-v-2252f765 data-v-7ed46b13><main class="main" style="width:60%;" data-v-2252f765><div class="post" data-v-2252f765 data-v-2252f765><article class="main-div"><div class="post-content content content__default"><p>本篇博客主要是对 关于在表单下拉选择中blur与click冲突解决
+</p> <h2 id="背景"><a href="#背景" class="header-anchor">#</a> 背景</h2> <div class="language-stylus extra-class"><pre class="language-stylus"><code>++<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span>+<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span>+<span class="token punctuation">[</span>+<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span>===<span class="token string">'10'</span>
+</code></pre></div><p>如果把这段表达式拆分开来，它相等于</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>++<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span>+<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
++
+<span class="token punctuation">[</span>+<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+</code></pre></div><h2 id="思路"><a href="#思路" class="header-anchor">#</a> 思路</h2> <p>在 JavaScript 里，+[] === 0 是完全正确的。 + 会把一些字符转化成数字，在这里，这个式子会变成 +&quot;&quot;或 0。因此，我们可以简化一下(++ 比 + 有更高的优先级)：</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>++<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span>0<span class="token punctuation">]</span>
++
+<span class="token punctuation">[</span>0<span class="token punctuation">]</span>
+</code></pre></div><p>因为 [[]][0] 的意思是：获取 [[]] 的第一个元素，这就得出了下面的结果：
+● [[]][0] 返回内部数组 ([])。根据语言规范，我们说 [[]][0] === [] 是不正确的，但让我们把这个内部数组称作 A，以避免错误的写法。
+● ++[[]][0] == A + 1， 因为 ++ 的意思是”加一”。
+● ++[[]][0] === +(A + 1)；换句话说，你得到的永远是个数值( +1 并不一定得到的是个数值，但 ++一定是)。
+同样，我们可以把这一堆代码简化的更清晰。让我们把 A 换回成 [] :</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>+<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span> + 1<span class="token punctuation">)</span>
++
+<span class="token punctuation">[</span>0<span class="token punctuation">]</span>
+</code></pre></div><p>在 JavaScript 里，这也是正确的：[] + 1 === &quot;1&quot;，因为 [] == &quot;&quot; (这相当于一个空的数组的内部元素连接)，于是</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>+<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span> + 1<span class="token punctuation">)</span> === +<span class="token punctuation">(</span>&quot;” + 1<span class="token punctuation">)</span>，并且 
++<span class="token punctuation">(</span><span class="token string">&quot;” + 1) === +(&quot;</span>1&quot;<span class="token punctuation">)</span>，并且 
++<span class="token punctuation">(</span><span class="token string">&quot;1&quot;</span><span class="token punctuation">)</span> === 1 
+</code></pre></div><p>让我们再次简化一下：</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>1
++
+<span class="token punctuation">[</span>0<span class="token punctuation">]</span>
+</code></pre></div><p>同样，在 Javascript 里，这是正确的：[0] == &quot;0&quot;，因为这是相当于一个有一个元素的数组的内部元素的连接。 各元素会使用，分隔。 当只有一个元素时，你可以推论出这个过程的结果就是它自身的第一个元素。
+所以，最终我们得到 (数字 + 字符串 = 字符串)：</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>1
++
+<span class="token string">&quot;0&quot;</span>
+
+=== <span class="token string">&quot;10&quot;</span> <span class="token comment">//</span>
+</code></pre></div><h2 id="原因"><a href="#原因" class="header-anchor">#</a> 原因</h2> <p>首先我们需要知道什么是<strong>隐式转换</strong>，JavaScript是一门弱类型的语言，他在声明变量的时候不需要指定类型，对变量赋值也没有类型的检测，所以js是非常的灵活的，但是有时候也会出现一些非常匪夷所思的问题，
+隐式类型转换就是指，数据的类型在不用人工干预的情况下进行转换的行为。在js中，当运算符在运算时，如果两边数据不统一，CPU就无法计算，这时我们编译器会自动将运算符两边的数据做一个数据类型转换，转成一样的数据类型再计算。这种无需程序员手动转换，而由编译器自动转换的方式就称为隐式转换
+<strong>方式</strong>
+隐式转换主要有三种方式</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>将值转为原始值，<span class="token func"><span class="token function">ToPrimitive</span><span class="token punctuation">(</span><span class="token punctuation">)</span>。</span>
+
+将值转为数字，<span class="token func"><span class="token function">ToNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span>。</span>
+
+将值转为字符串，<span class="token func"><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>。</span>
+</code></pre></div><p>运算符中的隐式类型转换</p> <p>+、-、*、/、++、–、+=、-=、&gt;、&lt;、&gt;=、&lt;=、==、!= 这些运算中，系统都会将值先转换为数字类型再进行计算或比较。
+1、加号运算符( + )可以把任何数据类型转换为数字，转换规则与 Number() 方法相同。
+Null、Undefined 和 false在与数字的计算中折算为0，true 折算为1。
+undefined会被转换为 NaN。
+NaN在算术运算符中遇到任何值进行比较结果都为NaN。
+比如</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span><span class="token string">'true'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//'1true'</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//2</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span>null<span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//1</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span>undefined<span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//NaN</span></span>
+
+</code></pre></div><p>2、可以用加号运算符很方便的把其他类型的值转换为数字类型。</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token operator">+</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 		<span class="token comment">//1</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token operator">+</span>undefined<span class="token punctuation">)</span><span class="token punctuation">;</span> 	<span class="token comment">//NaN</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token operator">+</span><span class="token string">&quot;123&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 		<span class="token comment">//123</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token operator">+</span><span class="token string">&quot;string&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 	<span class="token comment">//NaN</span></span>
+
+</code></pre></div><p>3、除了加号运算符，也可以使用 a - 0 的形式，将数据类型转换为数字。</p> <div class="language-stylus extra-class"><pre class="language-stylus"><code>console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">11</span>-<span class="token string">'5'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 		<span class="token comment">//6</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'11'</span><span class="token operator">-</span><span class="token string">'5'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//6</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>-null<span class="token punctuation">)</span><span class="token punctuation">;</span>			<span class="token comment">//-0</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">-</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 		<span class="token comment">//1</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span>null <span class="token operator">-</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 		<span class="token comment">//0</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&quot;123&quot;</span> <span class="token operator">-</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 	<span class="token comment">//123</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&quot;&quot;</span> <span class="token operator">-</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 		<span class="token comment">//0</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">999</span><span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 	<span class="token comment">//999</span></span>
+console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 	<span class="token comment">//1</span></span>
+
+</code></pre></div><p>4、比较运算符（= =），== 不同于===，故也存在隐式转换。</p> <p>比较运算符会把其他数据类型转换number数据类型后再比较。
+在javascript中有两种特殊情况无视规则。
+复杂数据类型的隐式转换
+复杂数据类型在隐式转换时的顺序如下：</p> <ol><li>先试用 valueOf() 方法获取其原始值，如果原始值不是 number 类型，则使用 toString() 方法转换成 string 类型。</li> <li>将 string 类型转换成 number 类型进行运算。
+比如</li></ol> <div class="language-stylus extra-class"><pre class="language-stylus"><code>console<span class="token punctuation">.</span><span class="token func"><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token operator">==</span><span class="token string">'1,2'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//true</span></span>
+
+</code></pre></div><p>将 [1,2] 用 valueOf() 取其原始值，发现不是数字类型，转换成 string 类型之后，发现与 ‘1,2’ 相等，所以返回 true。因此在js空数组等于0，空数组的toString()方法会得到空字符串，而空对象的toString()方法会得到字符串[object Object]，[] 通过同String()转成空字符串，再通过Number()转成0。因此+[]等于0。</p></div></article> <!----></div></main> <aside class="aside" data-v-2252f765 data-v-2252f765><div class="info-card main-div" data-v-32ead4ce data-v-2252f765><div class="info-card-header" style="background-size:cover;background-repeat:no-repeat;background-position:center;background-attachment:scroll;background-image:url(/blog/avatar-bg.jpeg);" data-v-32ead4ce><img src="/blog/avatar-top.jpeg" alt="Hlc" class="info-avatar" data-v-32ead4ce></div> <div class="info-card-body" data-v-32ead4ce><section class="info-name" data-v-32ead4ce>
+      Hlc
+    </section> <section class="info-desc" data-v-32ead4ce>Outside the pavilion, beside the ancient road, there are fragrant grass and green lotus days<br/>长亭外，古道边，芳草碧莲天</section> <section class="info-contact" data-v-32ead4ce><section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-location" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          Chengdu, China
+        </span></span></section> <!----> <section data-v-32ead4ce><span data-v-32ead4ce data-v-32ead4ce><svg class="icon" style="font-size:1em;" data-v-32ead4ce data-v-32ead4ce><use xlink:href="#icon-email" data-v-32ead4ce data-v-32ead4ce></use></svg><span class="info-text" data-v-32ead4ce data-v-32ead4ce>
+          1726660621@qq.com
+        </span></span></section></section></div> <div class="info-card-footer" data-v-32ead4ce><!----></div></div> <div class="post-toc main-div aside-toc" style="position:relative;top:0;width:0px;" data-v-2252f765><h4>- CATALOG</h4> <div class="post-nav-toc"><ul><li><a href="/blog/posts/2022/04/14/js%E9%9A%90%E5%BC%8F%E8%BD%AC%E6%8D%A2.html#背景">背景</a></li><li><a href="/blog/posts/2022/04/14/js%E9%9A%90%E5%BC%8F%E8%BD%AC%E6%8D%A2.html#思路">思路</a></li><li><a href="/blog/posts/2022/04/14/js%E9%9A%90%E5%BC%8F%E8%BD%AC%E6%8D%A2.html#原因">原因</a></li></ul></div></div></aside></div> <footer class="footer" data-v-7ed46b13><!----> <div class="copyright"><span id="custom">Copyright &copy; Hlc Blog 2022 <br /> 
+            Theme By <a href="https://www.vuepress.cn/" target="_blank">VuePress</a>
+            | <a href="https://github.com/Dorr-hlc/" target="_blank">hlc</a></span> <iframe src="https://ghbtns.com/github-btn.html?user=Dorr-hlc&amp;repo=blog&amp;type=star" frameborder="0" scrolling="0" width="80px" height="20px" class="footer-btn" style="margin-left: 2px; margin-bottom:-5px;"></iframe></div></footer></div><div class="global-ui"><!----><!----></div></div>
+    <script src="/blog/assets/js/app.c4280a72.js" defer></script><script src="/blog/assets/js/7.9faf11e6.js" defer></script><script src="/blog/assets/js/22.6f4fc4ba.js" defer></script>
+  </body>
+</html>
