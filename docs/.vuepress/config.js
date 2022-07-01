@@ -1,11 +1,11 @@
-const path = require("path");
+
 module.exports = {
     // 网站 Title
     title: 'Hlc 的博客 ｜ Hlc Blog',
     base: "/blog/", 
     // 网站描述
     description: '个人博客,记录学习',
-
+    keywords:'Hlc,博客,个人博客,记录学习',
     // 网站 favicon 图标设置等
     head: [
         ['link', { rel: 'icon', href: '/logo.png' }],
